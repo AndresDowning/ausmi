@@ -28,7 +28,7 @@ def generate_unique_name():
     return f"{str(uuid_value)}"
 
 
-def convert_text_to_speech(text, language_code='pt'):
+def convert_text_to_speech(text, language_code='es'):
     output_filepath = os.path.join(AUDIOS_DIR, f"{generate_unique_name()}.mp3")
     tts = gtts.gTTS(text=text, lang=language_code)
     tts.save(output_filepath)
@@ -69,12 +69,12 @@ def generate_response(text):
 async def help_command(update: telegram.Update,
                        context: telegram.ext.ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
-    help_message = f"Oi {user.mention_html()}, tudo bem?\n\n"
-    help_message += "Sou AUSMI, seu assistente virtual.\n"
-    help_message += "Podemos conversar por texto ou por voz, você é quem manda.\n\n"
-    help_message += "Use /leia [texto] se quiser que eu leia um texto para você.\n"
-    help_message += "Use /ajuda para que eu repita essa mensagem! \n\n"
-    help_message += "Sobre o que vamos conversar hoje? \U0001F916" # robot face emoji
+    help_message = f"Hola {user.mention_html()}, ¿cómo estás?\n\n"
+    help_message += "Soy AUSMI, tu asistente virtual.\n"
+    help_message += "Podemos conversar por texto o por voz, tú decides.\n\n"
+    help_message += "Usa /leer [texto] si quieres que lea un texto para ti.\n"
+    help_message += "Usa /ayuda para que repita este mensaje! \n\n"
+    help_message += "¿De qué vamos a hablar hoy? \U0001F916" # robot face emoji
 
     await update.message.reply_html(
         text=help_message,
@@ -86,7 +86,7 @@ async def read_command(update: telegram.Update,
                        context: telegram.ext.ContextTypes.DEFAULT_TYPE) -> None:
     text = " ".join(context.args)
     if len(text) <= 0:
-        no_text_message = "Informe o texto após o comando! \U0001F620"
+        no_text_message = "Por favor, ingresa el texto después del comando. \U0001F620"
         return await update.message.reply_text(text=no_text_message)
     audio_path = convert_text_to_speech(text)
     await update.message.reply_audio(audio=audio_path)
@@ -120,8 +120,8 @@ def main() -> None:
 
     application = telegram.ext.Application.builder().token(TELEGRAM_TOKEN).build()
 
-    application.add_handler(telegram.ext.CommandHandler("leia", read_command))
-    application.add_handler(telegram.ext.CommandHandler("ajuda", help_command))
+    application.add_handler(telegram.ext.CommandHandler("leer", read_command))
+    application.add_handler(telegram.ext.CommandHandler("ayuda", help_command))
     application.add_handler(telegram.ext.MessageHandler(
         filters.TEXT & ~filters.COMMAND, handle_text))
     application.add_handler(telegram.ext.MessageHandler(
