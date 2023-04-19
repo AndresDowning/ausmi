@@ -63,7 +63,7 @@ def summarize_transcript(text):
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a helpful assistant that summarizes texts in Spanish."},
-            {"role": "user", "content": f"Resumir en puntos clave el siguiente texto en español: {text}"}
+            {"role": "user", "content": f"Organiza las ideas y indica los puntos clave el siguiente texto en español: {text}"}
         ]
     )
 
