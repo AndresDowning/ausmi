@@ -7,6 +7,7 @@ import pydub
 import telegram
 import gtts
 from telegram.ext import filters
+import re
 
 AUDIOS_DIR = "audios"
 OPENAI_TOKEN = os.getenv("OPENAI_TOKEN")
@@ -98,6 +99,20 @@ async def handle_text(update: telegram.Update,
     text = update.message.text
     answer = generate_response(text)
     await update.message.reply_text(answer)
+    
+    
+def summarize_transcript(text):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant that summarizes texts in Spanish."},
+            {"role": "user", "content": f"Resumir en puntos clave el siguiente texto en español: {text}"}
+        ]
+    )
+
+    summary = response["choices"][0]["message"]["content"].strip()
+    bullet_points = re.split(r'\n+', summary)
+    return bullet_points
 
 
 async def handle_voice(update: telegram.Update,
