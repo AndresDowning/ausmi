@@ -105,12 +105,11 @@ async def handle_voice(update: telegram.Update,
     ogg_filepath = await download_voice_as_ogg(update.message.voice)
     mp3_filepath = convert_ogg_to_mp3(ogg_filepath)
     transcripted_text = convert_speech_to_text(mp3_filepath)
-    answer = generate_response(transcripted_text)
-    answer_audio_path = convert_text_to_speech(answer)
-    await update.message.reply_audio(audio=answer_audio_path)
+    bullet_points = summarize_transcript(transcripted_text)
+    summary_text = "\n".join([f"• {point}" for point in bullet_points])
+    await update.message.reply_text(summary_text)
     os.remove(ogg_filepath)
     os.remove(mp3_filepath)
-    os.remove(answer_audio_path)
 
 
 def main() -> None:
